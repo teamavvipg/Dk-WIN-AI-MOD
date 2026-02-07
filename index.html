@@ -10,7 +10,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;600;800&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { height: 100%; overflow: hidden; background: #000; font-family: 'Poppins', sans-serif; }
+        body, html { height: 100%; width: 100%; overflow: hidden; background: #000; font-family: 'Poppins', sans-serif; }
 
         #loginPage { display: flex; justify-content: center; align-items: center; height: 100vh; background: radial-gradient(circle at center, #001a33, #000); }
         .ai-card { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 40px; padding: 40px 30px; width: 90%; max-width: 380px; text-align: center; }
@@ -46,8 +46,10 @@
         .small-btn { font-size: 8px; font-weight: 900; color: #6a7c92; text-transform: uppercase; border: 1px solid #333; padding: 2px 6px; border-radius: 5px; cursor: pointer; }
 
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        #gamePage { display: none; height: 100vh; width: 100%; position: relative; }
-        iframe { width: 100%; height: 100%; border: none; }
+        
+        /* --- GAME PAGE FULL SCREEN FIX --- */
+        #gamePage { display: none; height: 100vh; width: 100vw; position: relative; overflow: hidden; }
+        #frame { width: 100%; height: 100%; border: none; display: block; }
     </style>
 </head>
 <body>
@@ -96,7 +98,6 @@
 <script>
     let lastPeriod = "";
 
-    // আপনার নতুন API কনফিগ
     const API_CONFIG = {
         URL: 'https://api.bdg88zf.com/api/webapi/GetGameIssue',
         PAYLOAD: { 
@@ -114,7 +115,7 @@
             document.getElementById("gamePage").style.display = "block";
             document.getElementById("signalPanel").style.display = "flex";
             document.getElementById("frame").src = "https://dkwin.org/#/register?invitationCode=57752122669";
-            startMasterSync(); // সিগন্যাল ইঞ্জিন স্টার্ট
+            startMasterSync();
             setInterval(updateClock, 1000);
         } else { alert("ACCESS DENIED!"); }
     }
@@ -134,10 +135,8 @@
                 if (currentIssue !== lastPeriod) {
                     lastPeriod = currentIssue;
                     
-                    // পিরিয়ড ডিসপ্লে আপডেট
                     document.getElementById("periodText").innerText = "PERIOD: " + currentIssue.slice(-5);
                     
-                    // সিগন্যাল ক্যালকুলেশন লজিক
                     let digitsSum = currentIssue.split('').reduce((a, b) => a + (parseInt(b) || 0), 0);
                     let prediction = (digitsSum % 2 === 0) ? "BIG" : "SMALL";
                     
@@ -147,7 +146,7 @@
         } catch (error) {
             console.error("Syncing Error...");
         }
-        setTimeout(startMasterSync, 2000); // ২ সেকেন্ড পরপর অটো চেক
+        setTimeout(startMasterSync, 2000);
     }
 
     function updateSignalUI(prediction) {
@@ -157,7 +156,6 @@
         badge.innerText = prediction;
         badge.style.background = (prediction === "BIG") ? "#fcc52d" : "#4facfe";
 
-        // স্ক্রিনশট ম্যাচিং বল আপডেট
         ballRow.innerHTML = '';
         for(let i=0; i<3; i++) {
             let num = Math.floor(Math.random() * 10);
@@ -172,7 +170,6 @@
         document.getElementById("timerText").innerText = (60 - seconds).toString().padStart(2, '0');
     }
 
-    // প্যানেল ড্র্যাগিং ফাংশন
     const panel = document.getElementById("signalPanel");
     let drag = false, ox, oy;
     panel.addEventListener('touchstart', (e) => {
@@ -190,4 +187,3 @@
 </script>
 </body>
 </html>
-
